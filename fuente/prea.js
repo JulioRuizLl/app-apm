@@ -1,5 +1,5 @@
 const { chromium } = require('playwright'); const fs=require('fs');
-const F='/home/claude/dosier-apm/Dosier_gubernativo_APM.html';
+const path=require('path'); const F=path.resolve(__dirname,'../index.html');
 (async()=>{ const b=await chromium.launch(); const p=await b.newPage({viewport:{width:1280,height:800}});
  await p.goto('file://'+F); await p.waitForTimeout(1800);
  const main=await p.evaluate(()=>{document.querySelectorAll('[id^="ix"]').forEach(e=>e.removeAttribute('id')); document.querySelectorAll('.flash').forEach(e=>e.classList.remove('flash')); return document.getElementById('main').innerHTML;});
