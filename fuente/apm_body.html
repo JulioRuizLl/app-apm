@@ -928,10 +928,34 @@ var APM_EVENTS=[
    {fecha:'2026-11-12',hora:'18:00',titulo:'«La prueba digital a debate: valoración judicial e impacto de la IA en el proceso»'},
    {fecha:'2026-11-13',hora:'18:00',titulo:'«Estrategias de implementación IA sector público y privado, riesgos y oportunidades» · Cierre y clausura'}
   ]}
-], APM_NEWS=[];
+], APM_NEWS=[
+ {fecha:"2026-10-13",titulo:"¿ES NECESARIO TIPIFICAR COMO DELITO LA DESINFORMACIÓN EN LOS PROCESOS ELECTORALES?",url:"https://magistratura.es/es-necesario-tipificar-como-delito-la-desinformacion-en-los-procesos-electorales/"},
+ {fecha:"2026-09-24",titulo:"CALIFICACIÓN CULPABLE DEL CONCURSO",url:"https://magistratura.es/calificacion-culpable-del-concurso/"},
+ {fecha:"2026-09-18",titulo:"«Delegar nuestro pensamiento en la inteligencia artificial nos está haciendo cada vez más tontos»",url:"https://magistratura.es/delegar-nuestro-pensamiento-en-la-inteligencia-artificial-nos-esta-haciendo-cada-vez-mas-tontos/"},
+ {fecha:"2026-09-16",titulo:"¿Debe decirse que hemos usado IA en las sentencias? La transparencia del sistema de IA…",url:"https://magistratura.es/debe-decirse-que-hemos-usado-ia-en-las-sentencias-la-transparencia-del-sistema-de-ia-la-transparencia-en-el-uso-de-la-ia-y-el-secreto-de-las-deliberaciones/"},
+ {fecha:"2026-07-16",titulo:"Derecho y Cine (V): Metrópolis y el buen uso de la inteligencia artificial. A propósito del…",url:"https://magistratura.es/derecho-y-cine-v-metropolis-y-el-buen-uso-de-la-inteligencia-artificial-a-proposito-del-proyecto-de-ley-organica-para-el-buen-uso-y-la-gobernanza-de-la-inteligencia-artificial/"},
+ {fecha:"2026-07-09",titulo:"LEY DE NIETOS",url:"https://magistratura.es/ley-de-nietos/"},
+ {fecha:"2026-07-02",titulo:"DIARIO DE UN@ JUEZ DE PUEBLO (II)",url:"https://magistratura.es/diario-de-un-juez-de-pueblo-ii/"},
+ {fecha:"2026-06-25",titulo:"VACACIONES. EFECTO FRENAZO Y SÍNDROME DEL OCIO.",url:"https://magistratura.es/vacaciones-efecto-frenazo-y-sindrome-del-ocio/"},
+ {fecha:"2026-06-18",titulo:"LA FIABILIDAD DEL RECONOCIMIENTO EN RUEDA Y LA FALIBILIDAD DEL RECUERDO HUMANO",url:"https://magistratura.es/la-fiabilidad-del-reconocimiento-en-rueda-y-la-falibilidad-del-recuerdo-humano/"},
+ {fecha:"2026-07-02",titulo:"COMUNICADO ANTE LA DECISIÓN DEL MINISTERIO DE JUSTICIA DE NO RENOVAR COMISIONES DE SERVICIO PARA REFUERZO DE DETERMINADAS PLAZAS JUDICIALES",url:"https://magistratura.es/comunicado-ante-la-decision-del-ministerio-de-justicia-de-no-renovar-comisiones-de-servicio-para-refuerzo-de-determinadas-plazas-judiciales/"},
+ {fecha:"2026-04-14",titulo:"COMUNICADO APM",url:"https://magistratura.es/comunicado-apm/"},
+ {fecha:"2026-04-10",titulo:"COMUNICADO APM - Disposición Adicional 1ª LO 1/2026",url:"https://magistratura.es/comunicado-apm-disposicion-adicional-1a-lo-1-2026/"},
+ {fecha:"2026-02-13",titulo:"Nominación UIM para el Premio Nobel de la Paz 2026",url:"https://magistratura.es/nominacion-uim-para-el-premio-nobel-de-la-paz-2026/"},
+ {fecha:"2025-12-01",titulo:"Declaración Institucional XXVII Congreso Nacional APM",url:"https://magistratura.es/declaracion-institucional-xxvii-congreso-nacional-apm/"},
+ {fecha:"2025-10-27",titulo:"Comunicado de la EAJ sobre la situación de España",url:"https://magistratura.es/comunicado-de-la-eaj-sobre-la-situacion-de-espana/"},
+ {fecha:"2025-09-04",titulo:"Comunicado apertura de Año Judicial (4sep2025)",url:"https://magistratura.es/comunicado-apertura-de-ano-judicial-4sep2025/"},
+ {fecha:"2025-09-30",titulo:"Revista Deliberación – Número 19",url:"https://magistratura.es/revista-deliberacion-numero-19/"},
+ {fecha:"2024-01-25",titulo:"Revista Deliberación – Número 18",url:"https://magistratura.es/revista-deliberacion-numero-18/"},
+ {fecha:"2023-09-19",titulo:"Revista Deliberación – Número 17",url:"https://magistratura.es/revista-deliberacion-numero-17/"},
+ {fecha:"2023-05-03",titulo:"Revista Deliberación – Número 16",url:"https://magistratura.es/revista-deliberacion-numero-16/"},
+ {fecha:"2022-12-12",titulo:"Revista Deliberación – Número 15",url:"https://magistratura.es/revista-deliberacion-numero-15/"},
+ {fecha:"2022-07-13",titulo:"Revista Deliberación – Número 14",url:"https://magistratura.es/revista-deliberacion-numero-14/"},
+ {fecha:"2022-01-25",titulo:"Revista Deliberación – Número 13",url:"https://magistratura.es/revista-deliberacion-numero-13/"}
+];
 function upcomingEvents(){var t0=d0(new Date()); return APM_EVENTS.filter(function(e){var d=new Date((e.fechaFin||e.fecha)+'T12:00:00'); return !isNaN(d)&&d>=t0&&(!e.seccion||!st.terr||e.seccion===st.terr);}).sort(function(a,b){return a.fecha<b.fecha?-1:1;});}
 function rNov(s){
-  var ev=upcomingEvents(), nw=APM_NEWS.slice().sort(function(a,b){return a.fecha<b.fecha?1:-1;}).slice(0,6);
+  var ev=upcomingEvents(), nw=APM_NEWS.slice().sort(function(a,b){return a.fecha<b.fecha?1:-1;});
   var sec=document.getElementById('novedades'); if(!ev.length&&!nw.length){ if(sec) sec.hidden=true; return ''; } if(sec) sec.hidden=false;
   var h=secHead(s);
   if(ev.length){ h+='<h3 class="k">Próximas actividades</h3><div class="cards evs">'+ev.map(function(e,i){var d=new Date(e.fecha+'T12:00:00'); var when=e.diasTxt||(fmtDate(d)+(e.hora?' · '+e.hora:''));
@@ -941,7 +965,7 @@ function rNov(s){
     if(e.sesiones) s+='<ol class="ev-ses">'+e.sesiones.map(function(x){var dd=new Date(x.fecha+'T12:00:00'); return '<li><span class="ev-d">'+esc(dd.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'}))+' · '+esc(x.hora)+'</span><span>'+esc(x.titulo)+'</span></li>';}).join('')+'</ol>';
     if(e.organiza) s+='<p class="d ev-org">'+esc(e.organiza)+'</p>';
     s+='<div class="about-act">'+(e.programa?'<a class="act-btn sm" href="'+esc(e.programa)+'" target="_blank" rel="noopener">'+ICON.pdf+' Ver el programa</a>':'')+(e.url?ext(e.url,'Más información'):'')+'<button type="button" class="act-btn sm ghost" data-evics="'+i+'">'+ICON.cal+' Añadir al calendario</button></div></div></article>'; return s;}).join('')+'</div>'; }
-  if(nw.length){ h+='<h3 class="k">Noticias de la APM</h3><div class="cards">'+nw.map(function(n){return '<article class="card"><h4>'+esc(n.titulo)+'</h4><div class="card-b"><p class="d"><b>'+esc(fmtDate(new Date(n.fecha+'T12:00:00')))+'</b>'+(n.resumen?' · '+esc(n.resumen):'')+'</p>'+(n.url?'<div class="lines">'+line('web',n.url,'Leer más')+'</div>':'')+'</div></article>';}).join('')+'</div>'; }
+  if(nw.length){ h+='<h3 class="k">Noticias de la APM</h3><div class="cards">'+nw.map(function(n){return '<article class="card"><h4>'+esc(n.titulo)+'</h4><div class="card-b"><p class="d"><b>'+esc(fmtDate(new Date(n.fecha+'T12:00:00')))+'</b>'+(n.resumen?' · '+esc(n.resumen):'')+'</p>'+(n.url?'<div class="lines">'+line('web',n.url,'Leer más')+'</div>':'')+'</div></article>';}).join('')+'</div>';+'<p class="d">Fuente: <a href="https://magistratura.es/noticias/" target="_blank" rel="noopener">magistratura.es/noticias</a></p>'; }
   return h;
 }
 function eventICS(e){var stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z'); var L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//APM//App//ES'];
