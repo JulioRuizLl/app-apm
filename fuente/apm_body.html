@@ -13,6 +13,20 @@
   </div>
 </header>
 
+<style>
+.home-agenda{margin:22px 0 10px;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--sky);border-radius:12px;padding:20px 22px}
+.ag-head span{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.ag-head b{display:block;font-family:var(--serif);font-size:26px;line-height:1.2;color:var(--h-ink);margin-top:4px}
+.ag-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:14px}
+.ag-cols h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--sky);margin:0 0 8px}
+.ag-ul{list-style:none;margin:0;padding:0}
+.ag-ul li{padding:9px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.35}
+.ag-ul li:first-child{border-top:0;padding-top:0}
+.ag-ul li b{display:block;font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:2px}
+.ag-ul li span,.ag-ul li a{color:var(--ink)}
+.ag-more{display:inline-block;margin-top:14px;font-weight:700}
+@media (max-width:760px){.ag-cols{grid-template-columns:1fr;gap:16px}.home-agenda{padding:16px}.ag-head b{font-size:22px}}
+</style>
 <div class="appshell" id="top">
   <nav class="side" id="side" aria-label="Secciones de la app"></nav>
   <main id="main">
@@ -867,10 +881,16 @@ function renderHome(){
   if(st.favs.length){ h+='<div class="favs"><div class="favs-h"><b>'+ICON.starf+' Mis contactos</b><span>Guardados en este dispositivo</span></div><div class="favs-g">'+st.favs.slice(0,8).map(function(f){return '<div class="fav"><div class="fav-t"><b>'+esc(f.t)+'</b><button type="button" class="fav-x" data-fav="'+esc(f.k)+'" aria-label="Quitar">×</button></div><div class="lines">'+(f.h||'')+'</div></div>';}).join('')+'</div></div>'; }
   var sec=t?(APM.sec[t.id]||[]):[];
   el.innerHTML=h; h='';
-  var ag=document.getElementById('homeAgenda'); if(ag){ var evs=upcomingEvents(), nws=APM_NEWS.slice().sort(function(a,b){return a.fecha<b.fecha?1:-1;}).slice(0,3), agH='';
-    if(evs.length) agH+='<div class="sh"><h2>Próximas actividades</h2></div><ul style="margin:0 0 8px;padding-left:18px">'+evs.map(function(e){return '<li style="margin:0 0 6px"><b>'+esc(e.diasTxt||fmtDate(new Date(e.fecha+'T12:00:00')))+'</b> · '+esc(e.titulo)+'</li>';}).join('')+'</ul>';
-    if(nws.length) agH+='<div class="sh"><h2>Noticias de la APM</h2></div><ul style="margin:0 0 8px;padding-left:18px">'+nws.map(function(n){return '<li style="margin:0 0 6px"><b>'+esc(fmtDate(new Date(n.fecha+'T12:00:00')))+'</b> · '+esc(n.titulo)+'</li>';}).join('')+'</ul>';
-    if(agH) agH+='<a href="#novedades" data-jump="novedades">Ver detalles de la agenda y las noticias →</a>';
+  var ag=document.getElementById('homeAgenda'); if(ag){ var evs=upcomingEvents(), nws=APM_NEWS.slice().sort(function(a,b){return a.fecha<b.fecha?1:-1;}).slice(0,4);
+    var evH=evs.length?'<ul class="ag-ul">'+evs.map(function(e){return '<li><b>'+esc(e.diasTxt||fmtDate(new Date(e.fecha+'T12:00:00')))+'</b><span>'+esc(e.titulo)+'</span></li>';}).join('')+'</ul>':'';
+    var nwH=nws.length?'<ul class="ag-ul">'+nws.map(function(n){return '<li><b>'+esc(fmtDate(new Date(n.fecha+'T12:00:00')))+'</b><a href="'+esc(n.url)+'" target="_blank" rel="noopener">'+esc(n.titulo)+'</a></li>';}).join('')+'</ul>':'';
+    var agH='';
+    if(evH||nwH){
+      agH='<div class="ag-head"><span>La APM, al día</span><b>Agenda y noticias</b></div><div class="ag-cols">'
+        +(evH?'<div><h3>Próximas actividades</h3>'+evH+'</div>':'')
+        +(nwH?'<div><h3>Últimas noticias</h3>'+nwH+'</div>':'')
+        +'</div><a class="ag-more" href="#novedades" data-jump="novedades">Ver agenda y noticias completas →</a>';
+    }
     ag.innerHTML=agH; ag.hidden=!agH; }
   h+='<div class="home-card apm-card"><div class="hc-k">Tu sección de la APM</div>';
   if(sec.length) h+=sec.map(function(x){return '<div class="hc-t">Sección '+esc(x[0])+'</div><div class="hc-s">Presidencia: <b>'+esc(x[1])+'</b></div>';}).join('');
