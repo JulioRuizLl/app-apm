@@ -25,6 +25,20 @@
 .ag-ul li b{display:block;font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:2px}
 .ag-ul li span,.ag-ul li a{color:var(--ink)}
 .ag-more{display:inline-block;margin-top:14px;font-weight:700}
+.entry-wrap{margin:18px 0 6px}
+.entry-k{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 10px}
+.entry-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.entry{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:6px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);min-height:104px}
+.entry b{font-family:var(--serif);font-size:18px;line-height:1.25;color:var(--h-ink)}
+.entry span{font-size:14px;color:var(--muted);line-height:1.35}
+.entry:hover{border-color:var(--sky)}
+.entry:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.entry-main{background:var(--accent);border-color:var(--accent)}
+.entry-main b,.entry-main span{color:var(--accent-ink)}
+.ej{font-size:13.5px;color:var(--muted);margin-top:4px}
+.ej span{font-style:italic}
+@media (max-width:760px){.entry-g{grid-template-columns:1fr}.entry{min-height:0}}
+
 @media (max-width:760px){.ag-cols{grid-template-columns:1fr;gap:16px}.home-agenda{padding:16px}.ag-head b{font-size:22px}}
 </style>
 <div class="appshell" id="top">
@@ -35,11 +49,12 @@
         <div class="home-wel">
           <div class="eyebrow">Asociación Profesional de la Magistratura</div>
           <h1>Tu app de la APM</h1>
-          <p class="lede">Para jueces y magistrados de toda España: la agenda y las noticias de la APM, tu sección territorial y tu asociación, y después los trámites de tu destino, posesión y cese, y los contactos de tu territorio.</p>
+          <p class="lede">Empieza por lo que necesitas hoy. Debajo tienes la agenda y las noticias de la APM, y tu sección territorial.</p>
           <div class="home-stats"><span><b>17</b> TSJ</span><span><b>50</b> Audiencias</span><span><b>18</b> secciones APM</span></div>
         </div>
         <div id="homeSide" class="home-side"></div>
       </div>
+      <div class="entry-wrap" aria-label="Accesos rápidos"><div class="entry-k">¿Qué necesitas hoy?</div><div class="entry-g"><button type="button" class="entry entry-main" data-intent="primer"><b>Soy juez en mi primer destino</b><span>Posesión, plazos y documentación, paso a paso</span></button><button type="button" class="entry" data-intent="cesar"><b>Voy a cesar o cambiar de destino</b><span>Alarde, prórroga de jurisdicción y cese</span></button><button type="button" class="entry" data-intent="asoc"><b>Quiero asociarme a la APM</b><span>Requisitos y cómo hacerlo</span></button></div></div>
       <div id="homeAgenda" class="home-agenda"></div>
       <div class="ask">
         <div class="ask-terr"><label for="selTerr0"><span class="n">1</span>Elige tu territorio</label><div class="map-es" id="mapEs"></div><div class="map-cap" id="mapCap">Toca tu comunidad en el mapa o elígela en la lista</div><select id="selTerr0" aria-label="Tu Tribunal Superior de Justicia"><option value="">— Todos los territorios —</option></select><div id="miChip"></div></div>
@@ -298,9 +313,10 @@ var APM={
      ['Jueces Jóvenes','Javier Lapeña Azurmendi','Magistrado, Tribunal de Instancia de Tui']],
  sec:{and:[['Andalucía Occidental','Jesús Manuel Madroñal Navarro'],['Andalucía Oriental','Ana Verónica Álvarez Toro']],ara:[['Aragón','Luis Alberto Gil Nogueras']],ast:[['Asturias','Paloma Martínez Cimadevilla']],bal:[['Baleares','Sonia Martín Pastor']],can:[['Canarias','Nuria Anoro Carmona']],cnt:[['Cantabria','Amaya Merchán González']],cyl:[['Castilla y León','María de los Ángeles Palmero González']],clm:[['Castilla-La Mancha','Ricardo Gallego Corcoles']],cat:[['Cataluña','Jorge Ibarburen González']],val:[['Comunidad Valenciana','Gonzalo Sancho Cerdá']],ext:[['Extremadura','Esteban Guerrero Torres']],gal:[['Galicia','José Luis Deaño Rodríguez']],rio:[['La Rioja','Paula López Jiménez']],mad:[['Madrid','María Fátima Beardo Olivares']],mur:[['Murcia','Fernando Madrid Rodríguez']],nav:[['Navarra','María Jesús Azcona Labiano']],pva:[['País Vasco','José Luis Núñez Corral']]}
 };
+function ejCont(t){return '<div class="ej">Correo: <b>apm.'+esc(t.id)+'@ejemplo.es</b> · Teléfono: <b>+34 XXX XXX XXX</b> <span>(ejemplo, pendiente de confirmar)</span></div>';}
 function apmCard(t){
   var s=APM.sec[t.id]; if(!s) return '';
-  return '<article class="card wide" id="apm-'+t.id+'"><h4>APM · '+(s.length>1?'Secciones territoriales':'Sección territorial')+'</h4><div class="card-b">'+s.map(function(x,i){return '<div class="person"'+(i===0?' style="border:0;padding-top:0"':'')+'>Sección '+esc(x[0])+': <b>'+esc(x[1])+'</b></div>';}).join('')+'<p class="d">Contacto general de la APM: '+esc(APM.sede.a)+'</p>'+lines({ph:APM.sede.ph,em:[APM.sede.em[0]]})+'<p class="d" style="margin-top:8px"><a href="#asociarse" data-jump="asociarse">¿Aún no eres socio? Asóciate →</a></p>'+src([S.apmEst,S.apmEst])+'</div></article>';
+  return '<article class="card wide" id="apm-'+t.id+'"><h4>APM · '+(s.length>1?'Secciones territoriales':'Sección territorial')+'</h4><div class="card-b">'+s.map(function(x,i){return '<div class="person"'+(i===0?' style="border:0;padding-top:0"':'')+'>Sección '+esc(x[0])+': <b>'+esc(x[1])+'</b>'+ejCont(t)+'</div>';}).join('')+'<p class="d">Contacto general de la APM: '+esc(APM.sede.a)+'</p>'+lines({ph:APM.sede.ph,em:[APM.sede.em[0]]})+'<p class="d" style="margin-top:8px"><a href="#asociarse" data-jump="asociarse">¿Aún no eres socio? Asóciate →</a></p>'+src([S.apmEst,S.apmEst])+'</div></article>';
 }
 function rApm(s){
   var h=secHead(s)+'<p class="body">La Asociación Profesional de la Magistratura se organiza en un Congreso, una Comisión Permanente (la Presidencia de la Asociación y las Presidencias de las 18 secciones territoriales) y un Comité Ejecutivo de 11 miembros.</p>';
@@ -893,7 +909,7 @@ function renderHome(){
     }
     ag.innerHTML=agH; ag.hidden=!agH; }
   h+='<div class="home-card apm-card"><div class="hc-k">Tu sección de la APM</div>';
-  if(sec.length) h+=sec.map(function(x){return '<div class="hc-t">Sección '+esc(x[0])+'</div><div class="hc-s">Presidencia: <b>'+esc(x[1])+'</b></div>';}).join('');
+  if(sec.length) h+=sec.map(function(x){return '<div class="hc-t">Sección '+esc(x[0])+'</div><div class="hc-s">Presidencia: <b>'+esc(x[1])+'</b></div>'+ejCont(t);}).join('');
   else h+='<div class="hc-t">18 secciones territoriales</div><div class="hc-s">Elige tu territorio más abajo para ver la tuya.</div>';
   h+='<div class="hc-a"><a href="#apm" data-jump="apm">Estructura y secciones →</a><a href="mailto:'+APM.sede.em[0]+'">'+esc(APM.sede.em[0])+'</a></div></div>';
   h+='<div class="home-card join-card"><div class="hc-k">Asociación Profesional de la Magistratura</div><div class="hc-t">¿Aún no eres socio?</div><div class="hc-s">Representación, formación y una red de compañeros en todo el territorio.</div><div class="hc-a"><a class="act-btn" href="#asociarse" data-jump="asociarse">'+ICON.star+' Asóciate a la APM</a></div></div>';
