@@ -3,8 +3,11 @@ import os
 HERE=os.path.dirname(os.path.abspath(__file__))
 os.makedirs(HERE+'/out',exist_ok=True)
 D=HERE+'/base/'
+VARIANT=open(HERE+'/variante.txt').read().strip() if os.path.exists(HERE+'/variante.txt') else 'apm'
+TITLE={'apm':'APM · App para jueces y magistrados','dosier':'Dosier gubernativo APM · Guía del primer destino'}[VARIANT]
 f=open(D+'dosier-gubernativo-apm.html',encoding='utf-8').read(); s=open(D+'Dosier_gubernativo_APM.html',encoding='utf-8').read()
-body=open(HERE+'/apm_body.html',encoding='utf-8').read()
+body=open(HERE+'/apm_body.html',encoding='utf-8').read().replace('__VARIANT__',VARIANT)
+if VARIANT=='dosier': body=body.replace('julioruizll.github.io/app-apm','julioruizll.github.io/dosierGubAPM')
 brand=re.search(r'<a class="brand" href="#top"><img[^>]*></a>',f).group(0)
 CSS='.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}\n.tl-same{display:flex!important;align-items:center;gap:8px;font-weight:600;color:var(--ink)!important}\n.tl-same input{width:17px;height:17px;accent-color:var(--blue-deep)}\n'
 JOIN_CSS='''.join-pill{flex:none;display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:17px;background:var(--accent);color:var(--accent-ink)!important;font-weight:700;font-size:14px;text-decoration:none!important;border:1px solid var(--sky)}
@@ -282,7 +285,7 @@ assert b.count(old)==1; b=b.replace(old,brand)
 open(HERE+'/out/dosier-gubernativo-apm.html','w',encoding='utf-8').write(head(f)+b.rstrip('\n')+'\n')
 PWA_HEAD='<link rel="manifest" href="manifest.webmanifest">\n<meta name="theme-color" content="#1B2F57">\n<link rel="apple-touch-icon" href="apple-touch-icon.png">\n<meta name="apple-mobile-web-app-capable" content="yes">\n<meta name="mobile-web-app-capable" content="yes">\n<meta name="apple-mobile-web-app-title" content="APM">\n'
 PWA_JS='<script>if(\'serviceWorker\' in navigator && (location.protocol===\'https:\'||location.hostname===\'localhost\')){window.addEventListener(\'load\',function(){navigator.serviceWorker.register(\'sw.js\').catch(function(){});});}</script>\n'
-hs=head(s)
+hs=head(s).replace('<title>APM · App para jueces y magistrados</title>','<title>'+TITLE+'</title>',1)
 if 'rel="manifest"' not in hs: hs=hs.replace('<title>',PWA_HEAD+'<title>',1)
 open(HERE+'/../index.html','w',encoding='utf-8').write(hs+'</head>\n<body>\n'+b.rstrip('\n')+'\n'+PWA_JS+'\n</body>\n</html>\n')
 print('built')

@@ -35,6 +35,15 @@
 .entry:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
 .entry-main{background:var(--accent);border-color:var(--accent)}
 .entry-main b,.entry-main span{color:var(--accent-ink)}
+.faq-list{display:grid;gap:8px;margin-top:4px}
+.faq{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:0 16px}
+.faq summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;padding:14px 0;font-family:var(--serif);font-size:17px;font-weight:700;color:var(--h-ink)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::before{content:"+";flex:none;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--sky);color:#fff;font-size:16px;font-family:var(--sans,inherit)}
+.faq[open] summary::before{content:"–"}
+.faq ol{margin:0 0 10px;padding-left:22px}
+.faq li{margin:0 0 8px;font-size:15px;line-height:1.45}
+.faq > a{display:inline-block;margin:0 0 14px;font-weight:700}
 .ej{font-size:13.5px;color:var(--muted);margin-top:4px}
 .ej span{font-style:italic}
 @media (max-width:760px){.entry-g{grid-template-columns:1fr}.entry{min-height:0}}
@@ -65,6 +74,7 @@
       </div>
       <h2 class="home-h">Trámites y tu primer destino</h2>
       <div class="home-grid" id="homeGrid"></div>
+      <section id="faq"></section>
       <section id="midestino"></section>
     </div>
     <div class="view" data-view="tramites" id="v-tramites"><div class="subnav" data-subnav="tramites"></div><section id="posesion"></section><section id="cese"></section><section id="pendientes"></section></div>
@@ -185,6 +195,7 @@ var TSJ=[
   ap:[['La Rioja','C/ Marqués de Murrieta, 45-47 · 26005 Logroño',['941 29 64 89'],'941 29 64 88','','MORENO GARCIA, RICARDO','La-Rioja','la-rioja']]}
 ];
 
+var VARIANT='__VARIANT__';
 var VIEWS=[
  {id:'inicio',n:'Inicio',ic:'home'},
  {id:'apm',n:'APM',ic:'apm'},
@@ -193,6 +204,7 @@ var VIEWS=[
  {id:'mas',n:'Más',ic:'more'}
 ];
 var SECTIONS=[
+ {id:'faq',n:'Preguntas frecuentes del primer destino',v:'inicio'},
  {id:'midestino',n:'Mi destino',v:'inicio'},
  {id:'posesion',n:'Posesión y cese',v:'tramites'},
  {id:'cese',n:'Lista para el cese',v:'tramites'},
@@ -742,7 +754,16 @@ function rFuentes(s){
   h+='<h3 class="k">Fuentes consultadas</h3><ol class="srcs">'+list.map(function(x){return '<li>'+ext(x.u,esc(x.t))+'</li>';}).join('')+'<li>Fichas individuales del directorio del CGPJ para cada Presidencia (enlazadas en cada ficha).</li><li>Solo para Cataluña: '+esc(S.tsjc.t)+'.</li></ol>';
   return h;
 }
-var R={glosario:rGlos,novedades:rNov,acerca:rAbout,midestino:rMi,informatica:rInfo,apm:rApm,asociarse:rJoin,territorio:rTerr,posesion:rPosesion,cese:rCese,pendientes:rPend,estatal:rEstatal,normativa:rNorm,fuentes:rFuentes};
+var FAQ_Q={primer:'¿Cuándo y cómo tomo posesión de mi primer destino?',concurso:'¿Qué plazos tengo si cambio de destino tras un concurso?',cesar:'¿Qué tengo que hacer al cesar en mi destino?',alarde:'¿Cuándo debo formular alarde y en qué plazo?',vista:'¿Qué pasa si ceso con una vista a medias?',terr:'¿Con quién contacto en mi TSJ y en mi Audiencia?',it:'¿Qué aplicaciones informáticas usaré y dónde pido soporte?',asoc:'¿Cómo me asocio a la APM?',apmc:'¿Cómo contacto con la APM de mi territorio?'};
+var FAQ_ORDER=['primer','concurso','cesar','alarde','vista','terr','it','asoc','apmc'];
+function rFaq(s){
+  var h=secHead(s)+'<p class="body">Las dudas más habituales al llegar a la carrera judicial, con la norma que las resuelve. Toca una pregunta para ver la respuesta.</p><div class="faq-list">';
+  FAQ_ORDER.forEach(function(id){ var it=INTENTS.filter(function(x){return x.id===id;})[0]; if(!it) return; var steps=it.stepsFn?it.stepsFn():it.steps;
+    h+='<details class="faq"><summary>'+esc(FAQ_Q[id]||it.n)+'</summary><ol>'+steps.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ol><a href="#'+it.go+'" data-jump="'+it.go+'"'+(it.act?' data-act="'+it.act+'"':'')+'>Ir a la herramienta →</a></details>'; });
+  h+='</div>';
+  return h;
+}
+var R={faq:rFaq,glosario:rGlos,novedades:rNov,acerca:rAbout,midestino:rMi,informatica:rInfo,apm:rApm,asociarse:rJoin,territorio:rTerr,posesion:rPosesion,cese:rCese,pendientes:rPend,estatal:rEstatal,normativa:rNorm,fuentes:rFuentes};
 function renderSection(id){var s=SECTIONS.filter(function(x){return x.id===id;})[0]; var el=document.getElementById(id); if(el){ el.innerHTML=R[id](s); addReport(el);} if(id==='pendientes') prUpdate();}
 /* ---------- ¿Dato incorrecto? ---------- */
 var REPORT_TO='julio.ruiz@poderjudicial.es';
@@ -1199,6 +1220,19 @@ var obs;
 function spy(){ if(obs) obs.disconnect(); if(!('IntersectionObserver' in window)) return; obs=new IntersectionObserver(function(ents){ents.forEach(function(en){ if(en.isIntersecting){ var id=en.target.id; document.querySelectorAll('.view.on .subnav a').forEach(function(a){var on=a.dataset.sec===id; a.classList.toggle('on',on); if(on){var sn=a.parentNode; if(sn.scrollWidth>sn.clientWidth) sn.scrollTo({left:a.offsetLeft-16,behavior:motionBehavior()});}}); } });},{rootMargin:'-30% 0px -60% 0px'}); document.querySelectorAll('.view.on section').forEach(function(s){obs.observe(s);}); }
 document.documentElement.classList.add('intro');
 (function(){ try{ var sp=new URLSearchParams(location.search), t=sp.get('t')||sp.get('territorio'); if(t){ var n=norm(t).replace(/[^a-z]/g,''); var hit=(n==='esp'||n==='espana')?'esp':((TSJ.filter(function(x){return x.id===n;})[0]||TSJ.filter(function(x){return norm(x.n).replace(/[^a-z]/g,'').indexOf(n)>=0;})[0])||{}).id; if(hit){ st.terr=hit; try{localStorage.setItem('apm-terr',hit);}catch(e){} } } }catch(e){} })();
+(function(){
+  var v=document.getElementById('v-inicio'); if(!v) return;
+  function pick(sel){return v.querySelector(sel);}
+  var hero=pick('.home-hero'), entry=pick('.entry-wrap'), agenda=pick('#homeAgenda'), faq=pick('#faq'), ask=pick('.ask'), hh=pick('.home-h'), grid=pick('#homeGrid'), mi=pick('#midestino');
+  var order = VARIANT==='dosier' ? [hero,entry,faq,ask,hh,grid,mi,agenda] : [hero,entry,agenda,faq,ask,hh,grid,mi];
+  order.forEach(function(el){ if(el) v.appendChild(el); });
+  if(VARIANT==='dosier'){
+    var h1=pick('.home-wel h1'), lede=pick('.home-wel .lede');
+    if(h1) h1.textContent='Guía del primer destino';
+    if(lede) lede.textContent='Para jueces y magistrados que llegan a la carrera: posesión, plazos, cese, contactos de tu territorio y tu asociación, en un solo sitio. Elaborada por la APM.';
+    var ix=VIEWS.map(function(x){return x.id;}).indexOf('apm'); if(ix>=0){ var a=VIEWS.splice(ix,1)[0]; VIEWS.splice(3,0,a); }
+  }
+})();
 applyPrefs();
 renderAll();
 if(/[?&]bienvenida\b/i.test(location.search)) setTimeout(showWelcome,500);
